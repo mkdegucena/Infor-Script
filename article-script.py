@@ -2,6 +2,7 @@ from concurrent.futures import ThreadPoolExecutor as PoolExecutor
 from faker import Faker
 import requests
 import json
+import csv
 import random
 from datetime import datetime
 
@@ -15,6 +16,7 @@ apiKey = data['config']['api_key']
 
 # set var
 sectionList = []
+userSegmentList = []
 startTime = datetime.now()
 fake = Faker()
 
@@ -36,10 +38,16 @@ if responseFromCategories.status_code == 200:
 
 getArticles = requests.get(url + 'help_center/articles.json', auth=(email, apiKey))
 
+
+# get the existing user segment list 
+with open('userSegmentID.csv', newline='') as csvfile:
+    userSegmentList = list(csv.reader(csvfile))
+
 #stats
 currentArticleCount = getArticles.json()['count']
-totalNeedArticle = data['user_migration_config']['count'] - currentArticleCount
+totalNeedArticle = data['user_migration_config']['article_count'] - currentArticleCount
 createdTicket = 0
+
 
 def statsFunc():
 
@@ -47,24 +55,30 @@ def statsFunc():
     totalNeedArticle -= 1
     createdTicket += 1
 
+def counterSegmentFunc():
+
+    global counterSegment
+    counterSegment += 1
 
 def createIt(url):
 
 	section = random.choice(sectionList)
+	segment = random.choice(userSegmentList)[1]
 
-	dataArticle = {"article": {"title": str(fake.sentence()), "body": str(fake.text()) , "locale": str('en-us'),'user_segment_id':None,'draft':'false','permission_group_id':2989974},'notify_subscribers':'false'}
+	dataArticle = {"article": {"title": str(fake.sentence()), "body": str(fake.text()) , "locale": str('en-us'),'user_segment_id':str(segment),'draft':'false','permission_group_id':2989974},'notify_subscribers':'false'}
 	createArticle = requests.post(url + 'help_center/sections/' + str(section) + '/articles.json',data=json.dumps(dataArticle), auth=(email, apiKey),headers={'content-type': 'application/json'})
 	
 	if createArticle.status_code == 201:
 
 		statsFunc()
-		print("Ticket #" + str(createArticle.json()['article']['id']) + " created on " + str(datetime.now() - startTime))
+		print("Article #" + str(createArticle.json()['article']['id']) + " created on " + str(datetime.now() - startTime))
 		print("Remaining: " + str(totalNeedArticle))
 		print("# of Ticket created: " + str(createdTicket))
 
 	else:
 
 		print("Status Code: " + str(createArticle.status_code))
+		print(createArticle.json())
 		print("Error Occur. Please check the status code. This will still run the article is not created though.")
 
 # stats display
@@ -75,6 +89,6 @@ print("Migration starts!")
 # thread start
 urls = [url] * totalNeedArticle
 
-with PoolExecutor(max_workers=2) as executor:
+with PoolExecutor(max_workers=3) as executor:
     for _ in executor.map(createIt, urls):
         pass
