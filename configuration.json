@@ -1,0 +1,17 @@
+{
+	"config": {
+		"url": "https://{{subdomain}}.zendesk.com/api/v2/",
+		"email":"{{email}}",
+		"api_key":"{{key}}"
+	},
+	"user_script_config": {
+		"user_range":100,
+		"default_password":"zendesk123"
+	},
+	"user_segment_config": {
+		"segment_range":1
+	},
+	"user_migration_config": {
+		"article_count":1500000
+	}
+}
