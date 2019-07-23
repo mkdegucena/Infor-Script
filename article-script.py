@@ -89,6 +89,6 @@ print("Migration starts!")
 # thread start
 urls = [url] * totalNeedArticle
 
-with PoolExecutor(max_workers=3) as executor:
+with PoolExecutor(max_workers=6) as executor:
     for _ in executor.map(createIt, urls):
         pass

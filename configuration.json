@@ -1,15 +1,15 @@
 {
 	"config": {
-		"url": "https://{{subdomain}}.zendesk.com/api/v2/",
-		"email":"{{email}}",
-		"api_key":"{{key}}"
+		"url": "https://z3n-infortest.zendesk.com/api/v2/",
+		"email":"mdegucena@zendesk.com/token",
+		"api_key":"98kDLHP91qkeLHU7adKkvQfRBHG5ZIPtg1NMtoov"
 	},
 	"user_script_config": {
-		"user_range":100,
+		"user_range":101,
 		"default_password":"zendesk123"
 	},
 	"user_segment_config": {
-		"segment_range":1
+		"segment_range":10003
 	},
 	"user_migration_config": {
 		"article_count":1500000
