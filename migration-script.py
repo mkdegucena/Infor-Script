@@ -9,14 +9,10 @@ from datetime import datetime
 fake = Faker()
 
 # data requirments for the requests
-url = "https://z3n-infortest.zendesk.com/api/v2/"
-email = "mdegucena@zendesk.com/token"
-apiKey = "U5UJl5Kj3IxpBPNr9UH05Q6X0CUaLHpOk9FXwaJD"
+url = "add url here"
+email = "add email here/token"
+apiKey = "token"
 
-# data requirments for the requests
-url = "https://z3n-infortest.zendesk.com/api/v2/"
-email = "mdegucena@zendesk.com/token"
-apiKey = "U5UJl5Kj3IxpBPNr9UH05Q6X0CUaLHpOk9FXwaJD"
 
 # where we will push the random articles
 sectionList = []
