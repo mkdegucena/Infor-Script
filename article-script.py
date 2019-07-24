@@ -46,14 +46,14 @@ with open('userSegmentID.csv', newline='') as csvfile:
 #stats
 currentArticleCount = getArticles.json()['count']
 totalNeedArticle = data['user_migration_config']['article_count'] - currentArticleCount
-createdTicket = 0
+createdArticle = 0
 
 
 def statsFunc():
 
-    global totalNeedArticle,createdTicket
+    global totalNeedArticle,createdArticle
     totalNeedArticle -= 1
-    createdTicket += 1
+    createdArticle += 1
 
 def counterSegmentFunc():
 
@@ -73,7 +73,7 @@ def createIt(url):
 		statsFunc()
 		print("Article #" + str(createArticle.json()['article']['id']) + " created on " + str(datetime.now() - startTime))
 		print("Remaining: " + str(totalNeedArticle))
-		print("# of Ticket created: " + str(createdTicket))
+		print("# of Article created: " + str(createdArticle))
 
 	else:
 
@@ -89,6 +89,6 @@ print("Migration starts!")
 # thread start
 urls = [url] * totalNeedArticle
 
-with PoolExecutor(max_workers=6) as executor:
+with PoolExecutor(max_workers=4) as executor:
     for _ in executor.map(createIt, urls):
         pass
