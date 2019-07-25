@@ -26,9 +26,12 @@ secIndexReset = 0
 
 # Current Count, Total Remaining, Created User Segment List
 def getData():
+
 	global currentArticleCount,totalNeedArticle,userSegmentList
+	
 	# get the some counting
 	getArticles = requests.get(url + 'help_center/articles.json', auth=(email, apiKey))
+	
 	if getArticles.status_code == 200:
 		currentArticleCount = getArticles.json()['count']
 		totalNeedArticle = data['migration_config']['article_count'] - currentArticleCount
@@ -38,6 +41,7 @@ def getData():
 		userSegmentList = list(csv.reader(csvfile))
 
 def getAllSectionID():
+
 	# set the first call to get how many pages we need to call
 	respSec = requests.get(url + 'help_center/categories/' + str(data['migration_config']['category_id']) + '/sections.json', auth=(email, apiKey))
 	secPage = respSec.json()['page_count'] + 1
@@ -48,7 +52,7 @@ def getAllSectionID():
 	if respSec.status_code == 200:
 		# store the 1st call
 		storeSectionID(respSec.json())
-		# get how many page are we going to call skip the number 1
+		get how many page are we going to call skip the number 1
 		for x in range(2,secPage):
 			respLoopSec = requests.get(url + 'help_center/en-us/sections.json?page=' + str(x), auth=(email, apiKey))
 			if respLoopSec.status_code == 200:
@@ -57,19 +61,24 @@ def getAllSectionID():
 	return True
 
 def storeSectionID(data):
+
 	global sectionList
+
 	for sections in data['sections']:
 		sectionList.append(sections['id'])
 
 def statsFunc():
+
     global totalNeedArticle,createdArticle,secIndexReset
+    
     totalNeedArticle -= 1
     createdArticle += 1
     secIndexReset += 1
 
 def createIt(url):
+
 	global secIndexReset
-	print(secIndexReset)
+
 	section = sectionList[secIndexReset];
 	totalSection = len(sectionList)
 	segment = random.choice(userSegmentList)[1]
@@ -78,19 +87,17 @@ def createIt(url):
 	createArticle = requests.post(url + 'help_center/sections/' + str(section) + '/articles.json',data=json.dumps(dataArticle), auth=(email, apiKey),headers={'content-type': 'application/json'})
 	
 	if createArticle.status_code == 201:
-		
-		# check reset
-		if(secIndexReset == totalSection):
-			secIndexReset = -1
 		statsFunc()
-		
+		# check reset
+		if(secIndexReset > totalSection):
+			secIndexReset = 0		
 		print("Article #" + str(createArticle.json()['article']['id']) + " created on " + str(datetime.now() - startTime))
 		print("Remaining: " + str(totalNeedArticle))
 		print("# of Article created: " + str(createdArticle))
 
 	else:
 		print("Status Code: " + str(createArticle.status_code))
-		print("Error Occur. Please check the status code. This will still run the article is not created though.")
+		#print("Error Occur. Please check the status code. This will still run the article is not created though.")
 
 
 ######### START HERE #########
