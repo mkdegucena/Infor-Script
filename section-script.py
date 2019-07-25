@@ -12,8 +12,8 @@ url = data['config']['url']
 email = data['config']['email']
 apiKey = data['config']['api_key']
 
-for x in range(500):
+for x in range(data['section_config']['section_range']):
 	dataSection = {"section": {"locale": "en-us", "name": str(fake.sentence())}}
-	createSection = requests.post(url + 'help_center/categories/' + data['section_config']['category_id'] + '/sections.json',data=json.dumps(dataSection), auth=(email, apiKey),headers={'content-type': 'application/json'})
+	createSection = requests.post(url + 'help_center/categories/' + str(data['section_config']['category_id']) + '/sections.json',data=json.dumps(dataSection), auth=(email, apiKey),headers={'content-type': 'application/json'})
 	if createSection.status_code == 201:
 		print("Created:" + str(createSection.json()['section']['id']))
