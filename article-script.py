@@ -52,7 +52,7 @@ def getAllSectionID():
 	if respSec.status_code == 200:
 		# store the 1st call
 		storeSectionID(respSec.json())
-		get how many page are we going to call skip the number 1
+		# get how many page are we going to call skip the number 1
 		for x in range(2,secPage):
 			respLoopSec = requests.get(url + 'help_center/en-us/sections.json?page=' + str(x), auth=(email, apiKey))
 			if respLoopSec.status_code == 200:
